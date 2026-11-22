@@ -1,0 +1,19 @@
+import codecs
+from base64 import b64decode
+
+msg = open("intercepted.txt").read().strip()
+layers = 0
+
+while msg and msg[0] in "123":
+    label, msg = msg[0], msg[1:]
+    layers += 1
+
+    if label == "1":
+        msg = codecs.encode(msg, "rot13")
+    elif label == "2":
+        msg = b64decode(msg).decode()
+    else:
+        msg = "".join(chr((ord(c) - 97 - 4) % 26 + 97) if c.islower() else c for c in msg)
+
+print(msg)
+print("Layers decoded:", layers)
